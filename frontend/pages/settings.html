@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Settings – DukaanSaathi</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
+  <link href="/css/styles.css" rel="stylesheet" />
+</head>
+<body>
+  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+  <div class="app-shell">
+    <aside class="sidebar" id="appSidebar"></aside>
+
+    <div class="main-content">
+      <header class="topbar">
+        <div class="d-flex align-items-center gap-2">
+          <button class="btn btn-light d-lg-none" id="mobileSidebarToggle"><i class="bi bi-list fs-5"></i></button>
+          <h5 class="mb-0 fw-bold" id="topbarTitle">Business Settings</h5>
+        </div>
+      </header>
+
+      <main class="page-body">
+        <div class="row g-4">
+          <div class="col-lg-7">
+            <div class="ds-card">
+              <h6 class="fw-bold mb-3">Store &amp; Owner Profile</h6>
+              <form id="settingsForm">
+                <div class="row g-3">
+                  <div class="col-md-6">
+                    <label class="form-label small fw-semibold">Store Name</label>
+                    <input type="text" class="form-control" id="setStoreName" required />
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label small fw-semibold">Business Type</label>
+                    <input type="text" class="form-control" id="setBizType" required />
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label small fw-semibold">Owner Name</label>
+                    <input type="text" class="form-control" id="setOwnerName" required />
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label small fw-semibold">Phone Number</label>
+                    <input type="text" class="form-control" id="setPhone" required />
+                  </div>
+                  <div class="col-12">
+                    <label class="form-label small fw-semibold">Email (Login ID)</label>
+                    <input type="email" class="form-control bg-light" id="setEmail" readonly />
+                  </div>
+                </div>
+                <button type="submit" class="btn btn-primary-ds mt-4">Save Changes</button>
+              </form>
+            </div>
+          </div>
+
+          <div class="col-lg-5">
+            <div class="ds-card border-warning">
+              <h6 class="fw-bold mb-2"><i class="bi bi-arrow-counterclockwise text-warning me-1"></i>Demo Data Management</h6>
+              <p class="small text-muted">
+                Reset your store data back to the clean <strong>Sharma General Store</strong> demo dataset (10 Indian retail products, FIFO batches, sample sales, purchases, and expenses).
+              </p>
+              <button type="button" id="resetDemoBtn" class="btn btn-outline-danger btn-sm">
+                Reset Demo Data
+              </button>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="/js/api.js"></script>
+  <script src="/js/layout.js"></script>
+  <script>
+    async function loadSettings() {
+      const data = await apiFetch('/settings');
+      const s = data.settings;
+      document.getElementById('setStoreName').value = s.store_name;
+      document.getElementById('setBizType').value = s.business_type;
+      document.getElementById('setOwnerName').value = s.owner_name;
+      document.getElementById('setPhone').value = s.phone;
+      document.getElementById('setEmail').value = s.email;
+    }
+
+    document.getElementById('settingsForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      try {
+        await apiFetch('/settings', {
+          method: 'PUT',
+          body: JSON.stringify({
+            store_name: document.getElementById('setStoreName').value,
+            business_type: document.getElementById('setBizType').value,
+            owner_name: document.getElementById('setOwnerName').value,
+            phone: document.getElementById('setPhone').value
+          })
+        });
+        showToast('Settings updated');
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    });
+
+    document.getElementById('resetDemoBtn').addEventListener('click', async () => {
+      const ok = await confirmAction('Reset Demo Data', 'This will replace all current products, sales, purchases, and expenses for your business with the Sharma General Store demo dataset. Continue?');
+      if (!ok) return;
+      try {
+        const res = await apiFetch('/demo/reset', { method: 'POST' });
+        showToast(res.message);
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    });
+
+    (async () => {
+      const user = await initAppLayout('settings', 'Business Settings');
+      if (user) await loadSettings();
+    })();
+  </script>
+</body>
+</html>

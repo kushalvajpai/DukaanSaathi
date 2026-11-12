@@ -1,0 +1,22 @@
+# Dependencies
+node_modules/
+backend/node_modules/
+
+# Environment variables
+.env
+backend/.env
+*.env.local
+
+# C++ Build artifacts
+algorithms/build/
+algorithms/cmake-build-*/
+*.exe
+*.o
+*.obj
+*.out
+
+# Logs & OS files
+*.log
+npm-debug.log*
+.DS_Store
+Thumbs.db

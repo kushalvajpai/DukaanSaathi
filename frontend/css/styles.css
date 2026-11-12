@@ -1,0 +1,339 @@
+:root {
+  --ds-navy: #142D4E;
+  --ds-navy-dark: #0E213A;
+  --ds-navy-light: #1E406E;
+  --ds-bg: #F7F7F2;
+  --ds-surface: #FFFFFF;
+  --ds-emerald: #10B981;
+  --ds-emerald-dark: #059669;
+  --ds-text: #1E293B;
+  --ds-muted: #64748B;
+  --ds-border: #E2E8F0;
+  --ds-danger: #EF4444;
+  --ds-warning: #F59E0B;
+  --ds-sidebar-width: 260px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background-color: var(--ds-bg);
+  color: var(--ds-text);
+  margin: 0;
+  min-height: 100vh;
+}
+
+/* Auth Layout */
+.auth-wrapper {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, var(--ds-navy) 0%, var(--ds-navy-dark) 100%);
+}
+
+.auth-card {
+  background: var(--ds-surface);
+  border-radius: 16px;
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.18);
+  width: 100%;
+  max-width: 460px;
+  padding: 2.25rem;
+}
+
+.brand-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-weight: 700;
+  font-size: 1.35rem;
+  color: var(--ds-navy);
+}
+
+.brand-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background-color: var(--ds-emerald);
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+}
+
+/* App Shell */
+.app-shell {
+  display: flex;
+  min-height: 100vh;
+}
+
+.sidebar {
+  width: var(--ds-sidebar-width);
+  background-color: var(--ds-navy);
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1040;
+  transition: transform 0.25s ease;
+}
+
+.sidebar-header {
+  padding: 1.25rem 1.25rem 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  color: #fff;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 1.2rem;
+}
+
+.store-pill {
+  margin-top: 0.65rem;
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.78);
+  background: rgba(255, 255, 255, 0.08);
+  padding: 0.35rem 0.65rem;
+  border-radius: 6px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sidebar-nav {
+  flex: 1;
+  padding: 0.85rem 0.75rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.nav-item-link {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.65rem 0.9rem;
+  border-radius: 8px;
+  color: rgba(255, 255, 255, 0.8);
+  text-decoration: none;
+  font-size: 0.92rem;
+  font-weight: 500;
+  transition: background-color 0.15s ease, color 0.15s ease;
+  border: none;
+  background: transparent;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+}
+
+.nav-item-link:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.nav-item-link.active {
+  background-color: var(--ds-emerald);
+  color: #fff;
+  font-weight: 600;
+}
+
+.sidebar-footer {
+  padding: 0.75rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.main-content {
+  margin-left: var(--ds-sidebar-width);
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.topbar {
+  background: var(--ds-surface);
+  border-bottom: 1px solid var(--ds-border);
+  padding: 0.85rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 1020;
+}
+
+.page-body {
+  padding: 1.5rem;
+  flex: 1;
+}
+
+/* Cards & Surfaces */
+.ds-card {
+  background: var(--ds-surface);
+  border: 1px solid var(--ds-border);
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+  padding: 1.25rem;
+}
+
+.kpi-card {
+  background: var(--ds-surface);
+  border: 1px solid var(--ds-border);
+  border-radius: 12px;
+  padding: 1.15rem 1.25rem;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+  height: 100%;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.kpi-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.07);
+}
+
+.kpi-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--ds-muted);
+}
+
+.kpi-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-top: 0.35rem;
+  color: var(--ds-navy);
+}
+
+.kpi-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.15rem;
+}
+
+/* Buttons */
+.btn-primary-ds {
+  background-color: var(--ds-navy);
+  border-color: var(--ds-navy);
+  color: #fff;
+}
+
+.btn-primary-ds:hover {
+  background-color: var(--ds-navy-light);
+  border-color: var(--ds-navy-light);
+  color: #fff;
+}
+
+.btn-emerald {
+  background-color: var(--ds-emerald);
+  border-color: var(--ds-emerald);
+  color: #fff;
+}
+
+.btn-emerald:hover {
+  background-color: var(--ds-emerald-dark);
+  border-color: var(--ds-emerald-dark);
+  color: #fff;
+}
+
+/* Tables */
+.table thead th {
+  background-color: #F8FAFC;
+  color: var(--ds-muted);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-weight: 600;
+  border-bottom: 1px solid var(--ds-border);
+}
+
+.table tbody td {
+  vertical-align: middle;
+  font-size: 0.9rem;
+}
+
+/* Status Badges */
+.badge-stock-in {
+  background-color: #DCFCE7;
+  color: #166534;
+}
+
+.badge-stock-low {
+  background-color: #FEF3C7;
+  color: #92400E;
+}
+
+.badge-stock-out {
+  background-color: #FEE2E2;
+  color: #991B1B;
+}
+
+.adsa-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  background-color: #EFF6FF;
+  color: #1D4ED8;
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+}
+
+/* Mobile Responsive Sidebar */
+.sidebar-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.45);
+  z-index: 1035;
+}
+
+@media (max-width: 991.98px) {
+  .sidebar {
+    transform: translateX(-100%);
+  }
+  .sidebar.open {
+    transform: translateX(0);
+  }
+  .sidebar-backdrop.show {
+    display: block;
+  }
+  .main-content {
+    margin-left: 0;
+  }
+  .page-body {
+    padding: 1rem;
+  }
+}
+
+@media print {
+  .sidebar, .topbar, .no-print {
+    display: none !important;
+  }
+  .main-content {
+    margin-left: 0 !important;
+  }
+  body {
+    background: #fff;
+  }
+}

@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard – DukaanSaathi</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
+  <link href="/css/styles.css" rel="stylesheet" />
+</head>
+<body>
+  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+  <div class="app-shell">
+    <aside class="sidebar" id="appSidebar"></aside>
+
+    <div class="main-content">
+      <header class="topbar">
+        <div class="d-flex align-items-center gap-2">
+          <button class="btn btn-light d-lg-none" id="mobileSidebarToggle"><i class="bi bi-list fs-5"></i></button>
+          <h5 class="mb-0 fw-bold" id="topbarTitle">Dashboard</h5>
+        </div>
+        <div class="d-flex align-items-center gap-3">
+          <span class="small text-muted d-none d-sm-inline">Welcome, <strong id="topbarUser">...</strong></span>
+        </div>
+      </header>
+
+      <main class="page-body">
+        <!-- Filters -->
+        <div class="ds-card mb-4">
+          <div class="row g-2 align-items-end">
+            <div class="col-md-3">
+              <label class="form-label small fw-semibold mb-1">Period Filter</label>
+              <select class="form-select form-select-sm" id="rangeFilter">
+                <option value="today">Today</option>
+                <option value="7d">Last 7 Days</option>
+                <option value="month" selected>This Month</option>
+                <option value="last_month">Last Month</option>
+                <option value="custom">Custom Date Range</option>
+              </select>
+            </div>
+            <div class="col-md-3 custom-date-group d-none">
+              <label class="form-label small fw-semibold mb-1">Start Date</label>
+              <input type="date" class="form-control form-control-sm" id="startDate" />
+            </div>
+            <div class="col-md-3 custom-date-group d-none">
+              <label class="form-label small fw-semibold mb-1">End Date</label>
+              <input type="date" class="form-control form-control-sm" id="endDate" />
+            </div>
+            <div class="col-md-3 d-flex gap-2">
+              <button class="btn btn-sm btn-primary-ds" id="applyFilterBtn"><i class="bi bi-funnel me-1"></i>Apply</button>
+              <a href="/pages/sales.html" class="btn btn-sm btn-emerald"><i class="bi bi-plus-lg me-1"></i>New Sale</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- 8 KPI Cards -->
+        <div class="row g-3 mb-4">
+          <div class="col-6 col-xl-3">
+            <div class="kpi-card">
+              <div class="d-flex justify-content-between align-items-start">
+                <div>
+                  <div class="kpi-label">Sales Today</div>
+                  <div class="kpi-value" id="kpiSalesToday">₹0.00</div>
+                </div>
+                <span class="kpi-icon bg-success-subtle text-success"><i class="bi bi-cash-coin"></i></span>
+              </div>
+            </div>
+          </div>
+          <div class="col-6 col-xl-3">
+            <div class="kpi-card">
+              <div class="d-flex justify-content-between align-items-start">
+                <div>
+                  <div class="kpi-label">Purchases Today</div>
+                  <div class="kpi-value" id="kpiPurchasesToday">₹0.00</div>
+                </div>
+                <span class="kpi-icon bg-primary-subtle text-primary"><i class="bi bi-bag-check"></i></span>
+              </div>
+            </div>
+          </div>
+          <div class="col-6 col-xl-3">
+            <div class="kpi-card">
+              <div class="d-flex justify-content-between align-items-start">
+                <div>
+                  <div class="kpi-label">Operating Expenses</div>
+                  <div class="kpi-value" id="kpiExpenses">₹0.00</div>
+                </div>
+                <span class="kpi-icon bg-warning-subtle text-warning"><i class="bi bi-wallet2"></i></span>
+              </div>
+            </div>
+          </div>
+          <div class="col-6 col-xl-3">
+            <div class="kpi-card">
+              <div class="d-flex justify-content-between align-items-start">
+                <div>
+                  <div class="kpi-label">Gross Profit</div>
+                  <div class="kpi-value" id="kpiGrossProfit">₹0.00</div>
+                </div>
+                <span class="kpi-icon bg-info-subtle text-info"><i class="bi bi-graph-up"></i></span>
+              </div>
+            </div>
+          </div>
+          <div class="col-6 col-xl-3">
+            <div class="kpi-card">
+              <div class="d-flex justify-content-between align-items-start">
+                <div>
+                  <div class="kpi-label" id="kpiNetLabel">Net Profit</div>
+                  <div class="kpi-value" id="kpiNetProfit">₹0.00</div>
+                </div>
+                <span class="kpi-icon bg-success-subtle text-success" id="kpiNetIcon"><i class="bi bi-trophy"></i></span>
+              </div>
+            </div>
+          </div>
+          <div class="col-6 col-xl-3">
+            <div class="kpi-card">
+              <div class="d-flex justify-content-between align-items-start">
+                <div>
+                  <div class="kpi-label">Total Products</div>
+                  <div class="kpi-value" id="kpiTotalProducts">0</div>
+                </div>
+                <span class="kpi-icon bg-secondary-subtle text-secondary"><i class="bi bi-box-seam"></i></span>
+              </div>
+            </div>
+          </div>
+          <div class="col-6 col-xl-3">
+            <div class="kpi-card">
+              <div class="d-flex justify-content-between align-items-start">
+                <div>
+                  <div class="kpi-label">Low-Stock Alerts</div>
+                  <div class="kpi-value text-warning" id="kpiLowStock">0</div>
+                </div>
+                <span class="kpi-icon bg-warning-subtle text-warning"><i class="bi bi-exclamation-triangle"></i></span>
+              </div>
+            </div>
+          </div>
+          <div class="col-6 col-xl-3">
+            <div class="kpi-card">
+              <div class="d-flex justify-content-between align-items-start">
+                <div>
+                  <div class="kpi-label">Total Transactions</div>
+                  <div class="kpi-value" id="kpiTransactions">0</div>
+                </div>
+                <span class="kpi-icon bg-primary-subtle text-primary"><i class="bi bi-receipt"></i></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Charts Row 1 -->
+        <div class="row g-3 mb-4">
+          <div class="col-lg-6">
+            <div class="ds-card h-100">
+              <h6 class="fw-bold mb-3">Sales vs Operating Expenses</h6>
+              <canvas id="salesVsExpensesChart" height="190"></canvas>
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="ds-card h-100">
+              <h6 class="fw-bold mb-3">Daily Revenue</h6>
+              <canvas id="dailyRevenueChart" height="190"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Charts Row 2 -->
+        <div class="row g-3 mb-4">
+          <div class="col-lg-6">
+            <div class="ds-card h-100">
+              <h6 class="fw-bold mb-3">Weekly Profit Trend</h6>
+              <canvas id="weeklyProfitChart" height="190"></canvas>
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="ds-card h-100">
+              <h6 class="fw-bold mb-3">Monthly Performance</h6>
+              <canvas id="monthlyPerfChart" height="190"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- ADSA Analytics Row -->
+        <div class="row g-3 mb-4">
+          <div class="col-lg-4">
+            <div class="ds-card h-100">
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <h6 class="fw-bold mb-0">Top-Selling Products</h6>
+                <span class="adsa-pill">C++ Max-Heap</span>
+              </div>
+              <div class="table-responsive">
+                <table class="table table-sm mb-0">
+                  <thead><tr><th>Product</th><th class="text-end">Units</th><th class="text-end">Revenue</th></tr></thead>
+                  <tbody id="topSellingBody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="ds-card h-100">
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <h6 class="fw-bold mb-0">Highest-Profit Products</h6>
+                <span class="adsa-pill">C++ Profitability</span>
+              </div>
+              <div class="table-responsive">
+                <table class="table table-sm mb-0">
+                  <thead><tr><th>Product</th><th class="text-end">Gross Profit</th><th class="text-end">Margin</th></tr></thead>
+                  <tbody id="highProfitBody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="ds-card h-100">
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <h6 class="fw-bold mb-0">Lowest-Profit Products</h6>
+                <span class="adsa-pill">C++ Profitability</span>
+              </div>
+              <div class="table-responsive">
+                <table class="table table-sm mb-0">
+                  <thead><tr><th>Product</th><th class="text-end">Gross Profit</th><th class="text-end">Margin</th></tr></thead>
+                  <tbody id="lowProfitBody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="row g-3">
+          <div class="col-lg-4">
+            <div class="ds-card h-100">
+              <h6 class="fw-bold mb-3">Recent Sales</h6>
+              <ul class="list-group list-group-flush small" id="recentSalesList"></ul>
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="ds-card h-100">
+              <h6 class="fw-bold mb-3">Recent Purchases</h6>
+              <ul class="list-group list-group-flush small" id="recentPurchasesList"></ul>
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="ds-card h-100">
+              <h6 class="fw-bold mb-3">Recent Expenses</h6>
+              <ul class="list-group list-group-flush small" id="recentExpensesList"></ul>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+  <script src="/js/api.js"></script>
+  <script src="/js/layout.js"></script>
+  <script>
+    let charts = {};
+
+    function destroyChart(key) {
+      if (charts[key]) {
+        charts[key].destroy();
+        delete charts[key];
+      }
+    }
+
+    async function loadDashboard() {
+      const range = document.getElementById('rangeFilter').value;
+      const start = document.getElementById('startDate').value;
+      const end = document.getElementById('endDate').value;
+
+      let url = `/dashboard?range=${encodeURIComponent(range)}`;
+      if (range === 'custom' && start && end) {
+        url += `&start_date=${encodeURIComponent(start)}&end_date=${encodeURIComponent(end)}`;
+      }
+
+      try {
+        const data = await apiFetch(url);
+        const k = data.kpis;
+
+        document.getElementById('kpiSalesToday').textContent = formatINR(k.salesToday);
+        document.getElementById('kpiPurchasesToday').textContent = formatINR(k.purchasesToday);
+        document.getElementById('kpiExpenses').textContent = formatINR(k.operationalExpenses);
+        document.getElementById('kpiGrossProfit').textContent = formatINR(k.grossProfit);
+
+        const netEl = document.getElementById('kpiNetProfit');
+        const netLabel = document.getElementById('kpiNetLabel');
+        const netIcon = document.getElementById('kpiNetIcon');
+        netEl.textContent = formatINR(k.netProfit);
+        if (k.netProfit < 0) {
+          netLabel.textContent = 'Net Loss';
+          netEl.className = 'kpi-value text-danger';
+          netIcon.className = 'kpi-icon bg-danger-subtle text-danger';
+        } else {
+          netLabel.textContent = 'Net Profit';
+          netEl.className = 'kpi-value text-success';
+          netIcon.className = 'kpi-icon bg-success-subtle text-success';
+        }
+
+        document.getElementById('kpiTotalProducts').textContent = k.totalProducts;
+        document.getElementById('kpiLowStock').textContent = k.lowStockProducts;
+        document.getElementById('kpiTransactions').textContent = k.totalTransactions;
+
+        renderCharts(data);
+        renderAnalytics(data.analytics);
+        renderRecentActivity(data.recentActivity);
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+
+    function renderCharts(data) {
+      const k = data.kpis;
+      destroyChart('salesVsExp');
+      charts.salesVsExp = new Chart(document.getElementById('salesVsExpensesChart'), {
+        type: 'bar',
+        data: {
+          labels: ['Revenue', 'FIFO COGS', 'Gross Profit', 'Operating Expenses', 'Net Profit'],
+          datasets: [{
+            label: 'Amount (₹)',
+            data: [k.revenue, k.cogs, k.grossProfit, k.operationalExpenses, k.netProfit],
+            backgroundColor: ['#142D4E', '#64748B', '#10B981', '#F59E0B', k.netProfit >= 0 ? '#059669' : '#EF4444'],
+            borderRadius: 6
+          }]
+        },
+        options: { responsive: true, plugins: { legend: { display: false } } }
+      });
+
+      const daily = data.charts.dailySales || [];
+      destroyChart('dailyRev');
+      charts.dailyRev = new Chart(document.getElementById('dailyRevenueChart'), {
+        type: 'line',
+        data: {
+          labels: daily.map((d) => formatDate(d.dt)),
+          datasets: [{
+            label: 'Daily Revenue (₹)',
+            data: daily.map((d) => Number(d.revenue)),
+            borderColor: '#10B981',
+            backgroundColor: 'rgba(16, 185, 129, 0.12)',
+            fill: true,
+            tension: 0.3
+          }]
+        },
+        options: { responsive: true }
+      });
+
+      const weekly = data.charts.weeklyTrend || [];
+      destroyChart('weeklyProf');
+      charts.weeklyProf = new Chart(document.getElementById('weeklyProfitChart'), {
+        type: 'line',
+        data: {
+          labels: weekly.map((w) => `Wk ${formatDate(w.week_start)}`),
+          datasets: [{
+            label: 'Gross Profit (₹)',
+            data: weekly.map((w) => Number(w.gross_profit)),
+            borderColor: '#142D4E',
+            backgroundColor: 'rgba(20, 45, 78, 0.1)',
+            fill: true,
+            tension: 0.3
+          }]
+        },
+        options: { responsive: true }
+      });
+
+      const monthly = data.charts.monthlyPerf || [];
+      destroyChart('monthlyPerf');
+      charts.monthlyPerf = new Chart(document.getElementById('monthlyPerfChart'), {
+        type: 'bar',
+        data: {
+          labels: monthly.map((m) => m.ym),
+          datasets: [
+            { label: 'Revenue (₹)', data: monthly.map((m) => Number(m.revenue)), backgroundColor: '#142D4E', borderRadius: 4 },
+            { label: 'Gross Profit (₹)', data: monthly.map((m) => Number(m.gross_profit)), backgroundColor: '#10B981', borderRadius: 4 }
+          ]
+        },
+        options: { responsive: true }
+      });
+    }
+
+    function renderAnalytics(analytics) {
+      const topBody = document.getElementById('topSellingBody');
+      topBody.innerHTML = (analytics.topSelling || []).length
+        ? analytics.topSelling.map((p) => `<tr><td>${escapeHtml(p.name)}</td><td class="text-end fw-semibold">${p.units_sold}</td><td class="text-end">${formatINR(p.revenue)}</td></tr>`).join('')
+        : '<tr><td colspan="3" class="text-muted text-center py-3">No sales in this period</td></tr>';
+
+      const highBody = document.getElementById('highProfitBody');
+      highBody.innerHTML = (analytics.highestProfit || []).length
+        ? analytics.highestProfit.map((p) => `<tr><td>${escapeHtml(p.name)}</td><td class="text-end text-success fw-semibold">${formatINR(p.gross_profit)}</td><td class="text-end">${p.profit_margin}%</td></tr>`).join('')
+        : '<tr><td colspan="3" class="text-muted text-center py-3">No sales in this period</td></tr>';
+
+      const lowBody = document.getElementById('lowProfitBody');
+      lowBody.innerHTML = (analytics.lowestProfit || []).length
+        ? analytics.lowestProfit.map((p) => `<tr><td>${escapeHtml(p.name)}</td><td class="text-end ${p.gross_profit < 0 ? 'text-danger' : 'text-dark'} fw-semibold">${formatINR(p.gross_profit)}</td><td class="text-end">${p.profit_margin}%</td></tr>`).join('')
+        : '<tr><td colspan="3" class="text-muted text-center py-3">No sales in this period</td></tr>';
+    }
+
+    function renderRecentActivity(recent) {
+      const sList = document.getElementById('recentSalesList');
+      sList.innerHTML = recent.sales.length
+        ? recent.sales.map((s) => `<li class="list-group-item px-0 d-flex justify-content-between"><span><strong>${escapeHtml(s.invoice_number)}</strong> (${s.payment_method})</span><span class="text-success fw-semibold">${formatINR(s.total_amount)}</span></li>`).join('')
+        : '<li class="list-group-item px-0 text-muted">No recent sales</li>';
+
+      const pList = document.getElementById('recentPurchasesList');
+      pList.innerHTML = recent.purchases.length
+        ? recent.purchases.map((p) => `<li class="list-group-item px-0 d-flex justify-content-between"><span>${escapeHtml(p.supplier_name || 'Supplier')}</span><span class="fw-semibold">${formatINR(p.total_amount)}</span></li>`).join('')
+        : '<li class="list-group-item px-0 text-muted">No recent purchases</li>';
+
+      const eList = document.getElementById('recentExpensesList');
+      eList.innerHTML = recent.expenses.length
+        ? recent.expenses.map((e) => `<li class="list-group-item px-0 d-flex justify-content-between"><span>${escapeHtml(e.category)}</span><span class="text-danger fw-semibold">${formatINR(e.amount)}</span></li>`).join('')
+        : '<li class="list-group-item px-0 text-muted">No recent expenses</li>';
+    }
+
+    document.getElementById('rangeFilter').addEventListener('change', (e) => {
+      const isCustom = e.target.value === 'custom';
+      document.querySelectorAll('.custom-date-group').forEach((el) => el.classList.toggle('d-none', !isCustom));
+      if (!isCustom) loadDashboard();
+    });
+    document.getElementById('applyFilterBtn').addEventListener('click', loadDashboard);
+
+    (async () => {
+      const user = await initAppLayout('dashboard', 'Business Dashboard');
+      if (user) await loadDashboard();
+    })();
+  </script>
+</body>
+</html>

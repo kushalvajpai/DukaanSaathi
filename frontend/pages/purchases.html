@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Purchases – DukaanSaathi</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
+  <link href="/css/styles.css" rel="stylesheet" />
+</head>
+<body>
+  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+  <div class="app-shell">
+    <aside class="sidebar" id="appSidebar"></aside>
+
+    <div class="main-content">
+      <header class="topbar">
+        <div class="d-flex align-items-center gap-2">
+          <button class="btn btn-light d-lg-none" id="mobileSidebarToggle"><i class="bi bi-list fs-5"></i></button>
+          <h5 class="mb-0 fw-bold" id="topbarTitle">Purchases & Stock-In</h5>
+        </div>
+        <button class="btn btn-sm btn-emerald" id="addPurchaseBtn"><i class="bi bi-plus-lg me-1"></i>Record Purchase</button>
+      </header>
+
+      <main class="page-body">
+        <div class="alert alert-info small py-2 mb-3">
+          <i class="bi bi-info-circle me-1"></i>
+          Purchases create new <strong>FIFO Inventory Cost Layers</strong> and increase stock. They are not treated as operating expenses until items are sold (COGS).
+        </div>
+
+        <div class="ds-card mb-4">
+          <div class="row g-2 align-items-end">
+            <div class="col-md-3">
+              <label class="form-label small fw-semibold mb-1">Search</label>
+              <input type="text" class="form-control form-control-sm" id="searchPurchase" placeholder="Product, SKU, supplier..." />
+            </div>
+            <div class="col-md-3">
+              <label class="form-label small fw-semibold mb-1">Supplier</label>
+              <select class="form-select form-select-sm" id="supplierFilter">
+                <option value="">All Suppliers</option>
+              </select>
+            </div>
+            <div class="col-md-2">
+              <label class="form-label small fw-semibold mb-1">From</label>
+              <input type="date" class="form-control form-control-sm" id="startDate" />
+            </div>
+            <div class="col-md-2">
+              <label class="form-label small fw-semibold mb-1">To</label>
+              <input type="date" class="form-control form-control-sm" id="endDate" />
+            </div>
+            <div class="col-md-2">
+              <button class="btn btn-sm btn-primary-ds w-100" id="filterBtn">Filter</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="ds-card">
+          <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Product</th>
+                  <th>Supplier</th>
+                  <th class="text-end">Qty</th>
+                  <th class="text-end">Unit Cost</th>
+                  <th class="text-end">Total Amount</th>
+                  <th>Payment</th>
+                  <th class="text-end">Action</th>
+                </tr>
+              </thead>
+              <tbody id="purchasesBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Record Purchase Modal -->
+  <div class="modal fade" id="purchaseModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <form id="purchaseForm">
+          <div class="modal-header">
+            <h5 class="modal-title">Record Stock Purchase</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <div class="mb-3">
+              <label class="form-label small fw-semibold">Product</label>
+              <select class="form-select" id="purProduct" required></select>
+            </div>
+            <div class="row g-2 mb-3">
+              <div class="col-7">
+                <label class="form-label small fw-semibold">Supplier Name</label>
+                <input type="text" class="form-control" id="purSupplier" required />
+              </div>
+              <div class="col-5">
+                <label class="form-label small fw-semibold">Supplier Contact</label>
+                <input type="text" class="form-control" id="purContact" />
+              </div>
+            </div>
+            <div class="row g-2 mb-3">
+              <div class="col-4">
+                <label class="form-label small fw-semibold">Quantity</label>
+                <input type="number" min="1" class="form-control" id="purQty" required />
+              </div>
+              <div class="col-4">
+                <label class="form-label small fw-semibold">Unit Cost (₹)</label>
+                <input type="number" step="0.01" min="0.01" class="form-control" id="purCost" required />
+              </div>
+              <div class="col-4">
+                <label class="form-label small fw-semibold">Total (₹)</label>
+                <input type="text" class="form-control bg-light" id="purTotalPreview" readonly value="₹0.00" />
+              </div>
+            </div>
+            <div class="row g-2">
+              <div class="col-6">
+                <label class="form-label small fw-semibold">Purchase Date</label>
+                <input type="date" class="form-control" id="purDate" required />
+              </div>
+              <div class="col-6">
+                <label class="form-label small fw-semibold">Payment Status</label>
+                <select class="form-select" id="purStatus">
+                  <option value="Paid">Paid</option>
+                  <option value="Pending">Pending</option>
+                  <option value="Partial">Partial</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-emerald">Save Purchase</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Payment Status Modal -->
+  <div class="modal fade" id="editPurchaseModal" tabindex="-1">
+    <div class="modal-dialog modal-sm modal-dialog-centered">
+      <div class="modal-content">
+        <form id="editPurchaseForm">
+          <div class="modal-header">
+            <h6 class="modal-title">Update Payment Status</h6>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <input type="hidden" id="editPurId" />
+            <div class="mb-2">
+              <label class="form-label small fw-semibold">Status</label>
+              <select class="form-select form-select-sm" id="editPurStatus">
+                <option value="Paid">Paid</option>
+                <option value="Pending">Pending</option>
+                <option value="Partial">Partial</option>
+              </select>
+            </div>
+            <div>
+              <label class="form-label small fw-semibold">Notes</label>
+              <input type="text" class="form-control form-control-sm" id="editPurNotes" />
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-sm btn-primary-ds">Update</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="/js/api.js"></script>
+  <script src="/js/layout.js"></script>
+  <script>
+    let purchaseModal, editModal;
+
+    function updateTotalPreview() {
+      const q = Number(document.getElementById('purQty').value || 0);
+      const c = Number(document.getElementById('purCost').value || 0);
+      document.getElementById('purTotalPreview').value = formatINR(q * c);
+    }
+
+    async function loadFormOptions() {
+      const [prodData, supData] = await Promise.all([apiFetch('/products'), apiFetch('/purchases/suppliers')]);
+      document.getElementById('purProduct').innerHTML = (prodData.products || [])
+        .map((p) => `<option value="${p.id}">${escapeHtml(p.name)} (${p.sku})</option>`)
+        .join('');
+      document.getElementById('supplierFilter').innerHTML = '<option value="">All Suppliers</option>' +
+        (supData.suppliers || []).map((s) => `<option value="${s.id}">${escapeHtml(s.name)}</option>`).join('');
+    }
+
+    async function loadPurchases() {
+      const params = new URLSearchParams();
+      const s = document.getElementById('searchPurchase').value.trim();
+      const sup = document.getElementById('supplierFilter').value;
+      const sd = document.getElementById('startDate').value;
+      const ed = document.getElementById('endDate').value;
+      if (s) params.set('search', s);
+      if (sup) params.set('supplier_id', sup);
+      if (sd) params.set('start_date', sd);
+      if (ed) params.set('end_date', ed);
+
+      const data = await apiFetch(`/purchases?${params.toString()}`);
+      const tbody = document.getElementById('purchasesBody');
+      tbody.innerHTML = data.purchases.length
+        ? data.purchases.map((p) => {
+          const badge = p.payment_status === 'Paid' ? 'bg-success-subtle text-success' : p.payment_status === 'Pending' ? 'bg-danger-subtle text-danger' : 'bg-warning-subtle text-warning';
+          return `
+            <tr>
+              <td class="small">${formatDate(p.purchase_date)}</td>
+              <td class="fw-semibold">${escapeHtml(p.product_name)} <span class="text-muted small">(${escapeHtml(p.sku)})</span></td>
+              <td class="small">${escapeHtml(p.supplier_name || '-')}</td>
+              <td class="text-end fw-semibold">${p.quantity}</td>
+              <td class="text-end">${formatINR(p.unit_cost)}</td>
+              <td class="text-end fw-bold">${formatINR(p.total_cost)}</td>
+              <td><span class="badge ${badge}">${p.payment_status}</span></td>
+              <td class="text-end"><button class="btn btn-sm btn-light" onclick="openEditPurchase(${p.id}, '${p.payment_status}', '${escapeHtml(p.notes || '')}')"><i class="bi bi-pencil"></i></button></td>
+            </tr>
+          `;
+        }).join('')
+        : '<tr><td colspan="8" class="text-center text-muted py-4">No purchases found.</td></tr>';
+    }
+
+    window.openEditPurchase = function (id, status, notes) {
+      document.getElementById('editPurId').value = id;
+      document.getElementById('editPurStatus').value = status;
+      document.getElementById('editPurNotes').value = notes;
+      editModal.show();
+    };
+
+    document.getElementById('addPurchaseBtn').addEventListener('click', () => {
+      document.getElementById('purchaseForm').reset();
+      document.getElementById('purDate').value = new Date().toISOString().slice(0, 10);
+      document.getElementById('purTotalPreview').value = '₹0.00';
+      purchaseModal.show();
+    });
+
+    document.getElementById('purQty').addEventListener('input', updateTotalPreview);
+    document.getElementById('purCost').addEventListener('input', updateTotalPreview);
+
+    document.getElementById('purchaseForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      try {
+        await apiFetch('/purchases', {
+          method: 'POST',
+          body: JSON.stringify({
+            product_id: Number(document.getElementById('purProduct').value),
+            supplier_name: document.getElementById('purSupplier').value,
+            supplier_contact: document.getElementById('purContact').value,
+            quantity: Number(document.getElementById('purQty').value),
+            unit_cost: Number(document.getElementById('purCost').value),
+            purchase_date: document.getElementById('purDate').value,
+            payment_status: document.getElementById('purStatus').value
+          })
+        });
+        purchaseModal.hide();
+        showToast('Purchase recorded & FIFO batch added');
+        await Promise.all([loadFormOptions(), loadPurchases()]);
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    });
+
+    document.getElementById('editPurchaseForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const id = document.getElementById('editPurId').value;
+      try {
+        await apiFetch(`/purchases/${id}`, {
+          method: 'PUT',
+          body: JSON.stringify({
+            payment_status: document.getElementById('editPurStatus').value,
+            notes: document.getElementById('editPurNotes').value
+          })
+        });
+        editModal.hide();
+        showToast('Purchase updated');
+        await loadPurchases();
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    });
+
+    document.getElementById('filterBtn').addEventListener('click', loadPurchases);
+    document.getElementById('searchPurchase').addEventListener('input', loadPurchases);
+
+    (async () => {
+      purchaseModal = new bootstrap.Modal(document.getElementById('purchaseModal'));
+      editModal = new bootstrap.Modal(document.getElementById('editPurchaseModal'));
+      const user = await initAppLayout('purchases', 'Purchases & Stock-In');
+      if (user) {
+        await Promise.all([loadFormOptions(), loadPurchases()]);
+      }
+    })();
+  </script>
+</body>
+</html>
