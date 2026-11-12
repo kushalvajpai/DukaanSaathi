@@ -37,10 +37,12 @@ app.use(
         origin.startsWith('http://localhost:') ||
         origin.startsWith('http://127.0.0.1:') ||
         origin.endsWith('.vercel.app') ||
+        origin.endsWith('.up.railway.app') ||
         allowedOrigins.includes(origin)
       ) {
         return callback(null, true);
       }
+      console.warn(`[CORS Blocked] Origin: ${origin}`);
       return callback(new Error('Not allowed by CORS'));
     },
     credentials: true
