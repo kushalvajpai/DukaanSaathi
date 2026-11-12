@@ -1,7 +1,8 @@
 /**
  * Shared API client, formatting helpers, toast notifications, and confirmation modal.
  */
-const API_BASE = '/api';
+const API_ORIGIN = window.DUKAANSAATHI_API_ORIGIN || '';
+const API_BASE = `${API_ORIGIN}/api`;
 
 async function apiFetch(endpoint, options = {}) {
   const config = {

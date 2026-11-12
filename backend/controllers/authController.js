@@ -6,15 +6,22 @@ const { AppError } = require('../middleware/errorHandler');
 
 const COOKIE_NAME = 'dukaansaathi_token';
 
+function getCookieOptions() {
+  const isSecure = process.env.COOKIE_SECURE === 'true';
+  return {
+    httpOnly: true,
+    sameSite: isSecure ? 'none' : 'lax',
+    secure: isSecure
+  };
+}
+
 function setAuthCookie(res, payload) {
   const token = jwt.sign(payload, getJwtSecret(), {
     expiresIn: process.env.JWT_EXPIRES_IN || '7d'
   });
 
   res.cookie(COOKIE_NAME, token, {
-    httpOnly: true,
-    sameSite: 'lax',
-    secure: process.env.COOKIE_SECURE === 'true',
+    ...getCookieOptions(),
     maxAge: 7 * 24 * 60 * 60 * 1000
   });
 }
@@ -126,11 +133,7 @@ async function login(req, res, next) {
 }
 
 function logout(req, res) {
-  res.clearCookie(COOKIE_NAME, {
-    httpOnly: true,
-    sameSite: 'lax',
-    secure: process.env.COOKIE_SECURE === 'true'
-  });
+  res.clearCookie(COOKIE_NAME, getCookieOptions());
   res.json({ message: 'Logged out successfully' });
 }
 
