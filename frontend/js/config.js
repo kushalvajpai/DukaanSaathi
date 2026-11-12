@@ -1,12 +1,6 @@
 /**
  * Environment-aware API origin configuration.
- * - Local development (localhost / 127.0.0.1): uses same-origin ''
- * - Production (Vercel): points to the Railway backend URL
+ * Both local dev (http://localhost:5000) and Vercel production (via vercel.json /api/* rewrite)
+ * use same-origin '' so authentication cookies are always first-party.
  */
-(function () {
-  const host = window.location.hostname;
-  const isLocal = host === 'localhost' || host === '127.0.0.1';
-  window.DUKAANSAATHI_API_ORIGIN = isLocal
-    ? ''
-    : 'https://dukaansaathi-backend-production.up.railway.app';
-})();
+window.DUKAANSAATHI_API_ORIGIN = '';
