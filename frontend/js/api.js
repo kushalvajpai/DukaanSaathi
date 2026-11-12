@@ -16,7 +16,17 @@ async function apiFetch(endpoint, options = {}) {
 
   const response = await fetch(`${API_BASE}${endpoint}`, config);
 
-  if (response.status === 401 && !endpoint.startsWith('/auth/login') && !endpoint.startsWith('/auth/register')) {
+  const isAuthPage =
+    window.location.pathname === '/' ||
+    window.location.pathname.endsWith('/index.html') ||
+    window.location.pathname.endsWith('/register.html');
+
+  if (
+    response.status === 401 &&
+    !isAuthPage &&
+    !endpoint.startsWith('/auth/login') &&
+    !endpoint.startsWith('/auth/register')
+  ) {
     window.location.href = '/index.html';
     throw new Error('Session expired');
   }
